@@ -27,25 +27,21 @@ class Ping(threading.Thread):
 def main():
     parser = SafeConfigParser()
     candidates = ['homepi.conf', '/etc/homepi.conf']
+    parser.read(candidates)
 
-    GPIO_PIR = 7  # GPIO for PIR sensor
-    duration = 60  # sec, duration of each split file
-    numofclips = 10  # number of split files
+    GPIO_PIR = parser.getint('GPIO', 'GPIO_PIR')
+    duration = parser.getint("VIDEO", "duration")
+    numofclips = parser.getint('VIDEO', 'numofclips')
 
-    mail_from_hour = 9  # send mail from hour
-    mail_until_hour = 19  # until hour
+    minFreeSpace = parser.getint('DISK', 'minFreeSpace')
+    maxTotalSpace = parser.getint('DISK', 'maxTotalSpace')
 
-    minFreeSpace = 1000  # minimum disk free space
-    maxTotalSpace = 100000  # maximum recording disk space
+    recording_dir = parser.get('DIRECTORY', 'recording_dir')
 
-    recording_dir = '/media/homepi'  # where recording files are saved
-    #gmail_user = "biglaputan@gmail.com"  # gmail account ID and recipient
-    #gmail_pwd = "go99dhkd"  # gmail password
-    gmail_user = "operator1732@gmail.com"
-    gmail_pwd = "Rnrnfld86"
+    gmail_user = parser.get('GMAIL', 'gmail_user')
+    gmail_pwd = parser.get('GMAIL', 'gmail_pwd')
 
-    hosts = ['192.168.22.7', '192.168.22.6', '192.168.22.5', '192.168.22.10']
-
+    hosts = parser.get('DEVICES', 'hosts').split(',')
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(GPIO_PIR, GPIO.IN)
